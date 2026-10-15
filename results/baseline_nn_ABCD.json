@@ -1,0 +1,35 @@
+{
+ "A": {
+  "modelo": "1-NN pixeles 32x32 (correlacion)",
+  "t_ajuste_s": 0.13,
+  "ms_por_imagen": 0.193,
+  "acc_clase": 0.9997222222222222,
+  "mae_angulo": 6.080555555555556,
+  "pct_dentro_10": 97.86111111111111,
+  "agarre_seguro": 97.83333333333334
+ },
+ "B": {
+  "modelo": "1-NN pixeles 32x32 (correlacion)",
+  "t_ajuste_s": 0.09,
+  "ms_por_imagen": 0.29,
+  "acc_clase": 0.8975,
+  "mae_angulo": 64.5375,
+  "pct_dentro_10": 32.33333333333333,
+  "agarre_seguro": 27.416666666666668
+ },
+ "C": {
+  "modelo": "1-NN pixeles 32x32 (correlacion)",
+  "t_ajuste_s": 0.09,
+  "ms_por_imagen": 0.059,
+  "acc_clase": 0.9738333333333333,
+  "mae_angulo": 15.023333333333333,
+  "pct_dentro_10": 75.44999999999999,
+  "agarre_seguro": 75.18333333333334
+ },
+ "D": {
+  "modelo": "1-NN pixeles 32x32 (correlacion)",
+  "t_ajuste_s": 0.12,
+  "ms_por_imagen": 0.325,
+  "auroc_similitud": 0.9899172782897949
+ }
+}

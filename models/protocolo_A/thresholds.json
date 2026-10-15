@@ -1,0 +1,10 @@
+{
+ "confianza_clase_cruda": 0.5030795874700126,
+ "incertidumbre_angulo_deg": 71.08350479375697,
+ "distancia_vista_max": 0.30195456743240356,
+ "tau": 0.1,
+ "k": 2,
+ "dataset_sha256": "26635cc67c13f12b4010941d0e9e9af0bfda30c52007040377be0caba01c4c4a",
+ "protocolo": "A",
+ "descriptores": "hogcolor"
+}

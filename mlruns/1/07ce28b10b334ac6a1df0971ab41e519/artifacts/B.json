@@ -1,0 +1,85 @@
+{
+ "protocolo": "B",
+ "n_train": 6000,
+ "n_test": 1200,
+ "validacion": "6 pliegues geometricos del protocolo (solo entrenamiento)",
+ "comparacion_cv": [
+  {
+   "modelo": "SVM-RBF",
+   "cv_acc": 0.9007086113481034,
+   "cv_std": 0.03313766603375461,
+   "mejores_params": {
+    "C": 100,
+    "gamma": 0.0003
+   },
+   "segundos": 212.6
+  },
+  {
+   "modelo": "Regresion logistica",
+   "cv_acc": 0.8842082998161142,
+   "cv_std": 0.03215164752052945,
+   "mejores_params": {
+    "C": 1
+   },
+   "segundos": 50.7
+  },
+  {
+   "modelo": "Random Forest",
+   "cv_acc": 0.805201358842404,
+   "cv_std": 0.053698015039797924,
+   "mejores_params": {
+    "max_features": "sqrt"
+   },
+   "segundos": 158.4
+  },
+  {
+   "modelo": "KNN",
+   "cv_acc": 0.8635714768332305,
+   "cv_std": 0.032992036367423073,
+   "mejores_params": {
+    "n_neighbors": 1
+   },
+   "segundos": 26.9
+  }
+ ],
+ "mejor_modelo": "SVM-RBF",
+ "oof_acc_clase": 0.8926666666666667,
+ "angulo_params": {
+  "tau": 0.003,
+  "k": 2,
+  "espacio": "raw"
+ },
+ "oof_mae_angulo": 69.85329516772644,
+ "oof_pct_10": 18.75,
+ "oof_spearman_incert_error": 0.3450508248899776,
+ "oof_ece_cruda": 0.4930187146707321,
+ "umbrales": {
+  "confianza_clase_cruda": 0.5775080319659186,
+  "incertidumbre_angulo_deg": -1.0,
+  "distancia_vista_max": -1.0
+ },
+ "validacion_umbrales": {
+  "cobertura": 0.0,
+  "acierto_clase_aceptados": null,
+  "seguro_aceptados": null,
+  "falsa_aceptacion_desconocidos_sim": 0.0
+ },
+ "t_total_s": 723.6,
+ "test": {
+  "acc_clase": 0.8683333333333333,
+  "mae_angulo": 61.581176846126155,
+  "mediana_angulo": 20.000094704487083,
+  "pct_dentro_10": 26.166666666666664,
+  "ece_cruda": 0.4175450352420959,
+  "ece_calibrada": 0.061976907352648644,
+  "cobertura": 0.0,
+  "acc_clase_aceptados": null,
+  "pct_10_aceptados": null,
+  "agarre_seguro_aceptados": null,
+  "agarre_seguro_sin_rechazo": 18.25,
+  "precision_at5": 0.6778333333333333,
+  "spearman_incert_error": 0.2352196286069782,
+  "auroc_deteccion_fallo": 0.6900935118856446
+ },
+ "features": "hogcolor"
+}

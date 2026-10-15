@@ -1,0 +1,85 @@
+{
+ "protocolo": "C",
+ "n_train": 1200,
+ "n_test": 6000,
+ "validacion": "3 pliegues geometricos del protocolo (solo entrenamiento)",
+ "comparacion_cv": [
+  {
+   "modelo": "SVM-RBF",
+   "cv_acc": 0.7433333333333333,
+   "cv_std": 0.03776756397874887,
+   "mejores_params": {
+    "C": 10,
+    "gamma": 0.0003
+   },
+   "segundos": 10.3
+  },
+  {
+   "modelo": "Regresion logistica",
+   "cv_acc": 0.7366666666666667,
+   "cv_std": 0.03164472924341254,
+   "mejores_params": {
+    "C": 0.1
+   },
+   "segundos": 16.7
+  },
+  {
+   "modelo": "Random Forest",
+   "cv_acc": 0.6233333333333333,
+   "cv_std": 0.006236095644623242,
+   "mejores_params": {
+    "max_features": "sqrt"
+   },
+   "segundos": 15.8
+  },
+  {
+   "modelo": "KNN",
+   "cv_acc": 0.6625000000000001,
+   "cv_std": 0.01541103500742243,
+   "mejores_params": {
+    "n_neighbors": 1
+   },
+   "segundos": 5.4
+  }
+ ],
+ "mejor_modelo": "SVM-RBF",
+ "oof_acc_clase": 0.7083333333333334,
+ "angulo_params": {
+  "tau": 0.1,
+  "k": null,
+  "espacio": "raw"
+ },
+ "oof_mae_angulo": 51.974543865877386,
+ "oof_pct_10": 12.916666666666668,
+ "oof_spearman_incert_error": 0.2367172893870065,
+ "oof_ece_cruda": 0.6139001874091369,
+ "umbrales": {
+  "confianza_clase_cruda": 0.20808273859735746,
+  "incertidumbre_angulo_deg": -1.0,
+  "distancia_vista_max": -1.0
+ },
+ "validacion_umbrales": {
+  "cobertura": 0.0,
+  "acierto_clase_aceptados": null,
+  "seguro_aceptados": null,
+  "falsa_aceptacion_desconocidos_sim": 0.0
+ },
+ "t_total_s": 79.1,
+ "test": {
+  "acc_clase": 0.8548333333333333,
+  "mae_angulo": 19.46238390035172,
+  "mediana_angulo": 8.545838915791407,
+  "pct_dentro_10": 56.699999999999996,
+  "ece_cruda": 0.6669988098514623,
+  "ece_calibrada": 0.08546143376174387,
+  "cobertura": 0.0,
+  "acc_clase_aceptados": null,
+  "pct_10_aceptados": null,
+  "agarre_seguro_aceptados": null,
+  "agarre_seguro_sin_rechazo": 52.483333333333334,
+  "precision_at5": 0.645,
+  "spearman_incert_error": 0.4887136872976024,
+  "auroc_deteccion_fallo": 0.7926267897064748
+ },
+ "features": "hogcolor"
+}

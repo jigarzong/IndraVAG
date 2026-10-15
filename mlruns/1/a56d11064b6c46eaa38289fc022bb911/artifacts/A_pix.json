@@ -1,0 +1,85 @@
+{
+ "protocolo": "A",
+ "n_train": 3600,
+ "n_test": 3600,
+ "validacion": "2 pliegues geometricos del protocolo (solo entrenamiento)",
+ "comparacion_cv": [
+  {
+   "modelo": "SVM-RBF",
+   "cv_acc": 0.9775,
+   "cv_std": 0.0030555555555555336,
+   "mejores_params": {
+    "C": 10,
+    "gamma": 0.0003
+   },
+   "segundos": 41.3
+  },
+  {
+   "modelo": "Regresion logistica",
+   "cv_acc": 0.9747222222222223,
+   "cv_std": 0.0025000000000000022,
+   "mejores_params": {
+    "C": 10
+   },
+   "segundos": 25.2
+  },
+  {
+   "modelo": "Random Forest",
+   "cv_acc": 0.9444444444444444,
+   "cv_std": 0.0050000000000000044,
+   "mejores_params": {
+    "max_features": "sqrt"
+   },
+   "segundos": 25.7
+  },
+  {
+   "modelo": "KNN",
+   "cv_acc": 0.9658333333333333,
+   "cv_std": 0.0002777777777778212,
+   "mejores_params": {
+    "n_neighbors": 1
+   },
+   "segundos": 6.5
+  }
+ ],
+ "mejor_modelo": "SVM-RBF",
+ "oof_acc_clase": 0.9775,
+ "angulo_params": {
+  "tau": 0.1,
+  "k": 2,
+  "espacio": "raw"
+ },
+ "oof_mae_angulo": 10.414747167743267,
+ "oof_pct_10": 85.80555555555556,
+ "oof_spearman_incert_error": -0.20777038611509166,
+ "oof_ece_cruda": 0.6920336958846838,
+ "umbrales": {
+  "confianza_clase_cruda": 0.505924716305431,
+  "incertidumbre_angulo_deg": 10.024356935999938,
+  "distancia_vista_max": 0.15270650386810303
+ },
+ "validacion_umbrales": {
+  "cobertura": 0.006944444444444444,
+  "acierto_clase_aceptados": 100.0,
+  "seguro_aceptados": 100.0,
+  "falsa_aceptacion_desconocidos_sim": 0.7222222222222222
+ },
+ "t_total_s": 168.4,
+ "test": {
+  "acc_clase": 0.9977777777777778,
+  "mae_angulo": 2.1371339158833114,
+  "mediana_angulo": 0.11947223921453087,
+  "pct_dentro_10": 97.16666666666667,
+  "ece_cruda": 0.5159729064883788,
+  "ece_calibrada": 0.0013529286678235044,
+  "cobertura": 0.3411111111111111,
+  "acc_clase_aceptados": 100.0,
+  "pct_10_aceptados": 98.69706840390879,
+  "agarre_seguro_aceptados": 98.69706840390879,
+  "agarre_seguro_sin_rechazo": 97.11111111111111,
+  "precision_at5": 0.9375,
+  "spearman_incert_error": -0.6457131912278667,
+  "auroc_deteccion_fallo": 0.884603007833128
+ },
+ "features": "pix"
+}

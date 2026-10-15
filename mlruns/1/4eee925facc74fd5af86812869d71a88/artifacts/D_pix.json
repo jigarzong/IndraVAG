@@ -1,0 +1,78 @@
+{
+ "protocolo": "D",
+ "n_train": 6480,
+ "n_test": 720,
+ "validacion": "3 pliegues geometricos del protocolo (solo entrenamiento)",
+ "comparacion_cv": [
+  {
+   "modelo": "SVM-RBF",
+   "cv_acc": 0.9981481481481481,
+   "cv_std": 0.00100011430530988,
+   "mejores_params": {
+    "C": 10,
+    "gamma": 0.0003
+   },
+   "segundos": 117.5
+  },
+  {
+   "modelo": "Regresion logistica",
+   "cv_acc": 0.9973765432098766,
+   "cv_std": 0.0004364856673991368,
+   "mejores_params": {
+    "C": 10
+   },
+   "segundos": 57.5
+  },
+  {
+   "modelo": "Random Forest",
+   "cv_acc": 0.9888888888888889,
+   "cv_std": 0.0007560153527108698,
+   "mejores_params": {
+    "max_features": "sqrt"
+   },
+   "segundos": 68.7
+  },
+  {
+   "modelo": "KNN",
+   "cv_acc": 0.9964506172839506,
+   "cv_std": 0.0012151246719153924,
+   "mejores_params": {
+    "n_neighbors": 1
+   },
+   "segundos": 19.8
+  }
+ ],
+ "mejor_modelo": "SVM-RBF",
+ "oof_acc_clase": 0.9978395061728395,
+ "angulo_params": {
+  "tau": 0.1,
+  "k": 2,
+  "espacio": "raw"
+ },
+ "oof_mae_angulo": 2.4314144755049254,
+ "oof_pct_10": 97.23765432098766,
+ "oof_spearman_incert_error": -0.6728018457051316,
+ "oof_ece_cruda": 0.3993148258090741,
+ "umbrales": {
+  "confianza_clase_cruda": 0.7043385162829843,
+  "incertidumbre_angulo_deg": 210.00842766806025,
+  "distancia_vista_max": 0.1275973916053772
+ },
+ "validacion_umbrales": {
+  "cobertura": 0.12083333333333333,
+  "acierto_clase_aceptados": 100.0,
+  "seguro_aceptados": 97.9565772669221,
+  "falsa_aceptacion_desconocidos_sim": 1.5123456790123457
+ },
+ "t_total_s": 428.4,
+ "test": {
+  "auroc_conf": 0.9289107510288066,
+  "auroc_conf_simulado": 0.8941794076741351,
+  "rechazo_desconocidos_solo_clase": 98.75,
+  "rechazo_desconocidos_combinado": 98.75,
+  "falso_rechazo_conocidos_oof": 87.91666666666667,
+  "aceptados_desconocidos": 1.25,
+  "auroc_dmin": 0.9931650805898491
+ },
+ "features": "pix"
+}

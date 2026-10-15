@@ -1,0 +1,13 @@
+{
+ "C": {
+  "modelo": "CNN pequena (3 bloques conv, 2 cabezas)",
+  "t_ajuste_s": 414.8,
+  "ms_por_imagen": 0.738,
+  "parametros": 153382,
+  "epocas": 91,
+  "acc_clase": 0.9938333333333333,
+  "mae_angulo": 28.128407464113707,
+  "pct_dentro_10": 28.616666666666667,
+  "agarre_seguro": 28.433333333333334
+ }
+}

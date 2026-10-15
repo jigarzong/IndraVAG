@@ -1,0 +1,46 @@
+{
+ "A": {
+  "modelo": "CNN pequena (3 bloques conv, 2 cabezas)",
+  "t_ajuste_s": 387.4,
+  "ms_por_imagen": 0.726,
+  "parametros": 153382,
+  "epocas": 25,
+  "acc_clase": 0.9975,
+  "mae_angulo": 27.427865556490918,
+  "pct_dentro_10": 26.666666666666668,
+  "agarre_seguro": 26.63888888888889
+ },
+ "B": {
+  "modelo": "CNN pequena (3 bloques conv, 2 cabezas)",
+  "t_ajuste_s": 496.6,
+  "ms_por_imagen": 1.17,
+  "parametros": 153382,
+  "epocas": 25,
+  "acc_clase": 0.9766666666666667,
+  "mae_angulo": 49.83776591807604,
+  "pct_dentro_10": 16.583333333333332,
+  "agarre_seguro": 16.083333333333332
+ },
+ "C": {
+  "modelo": "CNN pequena (3 bloques conv, 2 cabezas)",
+  "t_ajuste_s": 414.8,
+  "ms_por_imagen": 0.738,
+  "parametros": 153382,
+  "epocas": 91,
+  "acc_clase": 0.9938333333333333,
+  "mae_angulo": 28.128407464113707,
+  "pct_dentro_10": 28.616666666666667,
+  "agarre_seguro": 28.433333333333334,
+  "nota_reentreno": "Primera corrida con 25 epocas colapso (acc 2.0%) por pocos pasos de gradiente; se repitio con presupuesto fijo de ~1700 pasos (91 epocas)."
+ },
+ "D": {
+  "modelo": "CNN pequena (3 bloques conv, 2 cabezas)",
+  "t_ajuste_s": 494.3,
+  "ms_por_imagen": 1.125,
+  "parametros": 150812,
+  "epocas": 25,
+  "conf_media_desconocidos": 0.7687984704971313,
+  "auroc_conf": 0.8462075591087341,
+  "nota": "conocidos medidos sobre vistas de entrenamiento (cota optimista)"
+ }
+}

@@ -1,0 +1,85 @@
+{
+ "protocolo": "A",
+ "n_train": 3600,
+ "n_test": 3600,
+ "validacion": "2 pliegues geometricos del protocolo (solo entrenamiento)",
+ "comparacion_cv": [
+  {
+   "modelo": "SVM-RBF",
+   "cv_acc": 0.9775,
+   "cv_std": 0.0036111111111111205,
+   "mejores_params": {
+    "C": 100,
+    "gamma": 0.0003
+   },
+   "segundos": 34.4
+  },
+  {
+   "modelo": "Regresion logistica",
+   "cv_acc": 0.9755555555555555,
+   "cv_std": 0.006666666666666654,
+   "mejores_params": {
+    "C": 1
+   },
+   "segundos": 16.6
+  },
+  {
+   "modelo": "Random Forest",
+   "cv_acc": 0.8980555555555556,
+   "cv_std": 0.00527777777777777,
+   "mejores_params": {
+    "max_features": "sqrt"
+   },
+   "segundos": 34.0
+  },
+  {
+   "modelo": "KNN",
+   "cv_acc": 0.9466666666666667,
+   "cv_std": 0.004444444444444473,
+   "mejores_params": {
+    "n_neighbors": 1
+   },
+   "segundos": 5.4
+  }
+ ],
+ "mejor_modelo": "SVM-RBF",
+ "oof_acc_clase": 0.9641666666666666,
+ "angulo_params": {
+  "tau": 0.1,
+  "k": 2,
+  "espacio": "raw"
+ },
+ "oof_mae_angulo": 9.918970386295408,
+ "oof_pct_10": 86.0,
+ "oof_spearman_incert_error": -0.08509223593512702,
+ "oof_ece_cruda": 0.6668463536120708,
+ "umbrales": {
+  "confianza_clase_cruda": 0.5030795874700126,
+  "incertidumbre_angulo_deg": 71.08350479375697,
+  "distancia_vista_max": 0.30195456743240356
+ },
+ "validacion_umbrales": {
+  "cobertura": 0.028888888888888888,
+  "acierto_clase_aceptados": 100.0,
+  "seguro_aceptados": 96.15384615384616,
+  "falsa_aceptacion_desconocidos_sim": 2.8055555555555554
+ },
+ "t_total_s": 177.8,
+ "test": {
+  "acc_clase": 1.0,
+  "mae_angulo": 2.3759993495556855,
+  "mediana_angulo": 0.40213886957643297,
+  "pct_dentro_10": 96.86111111111111,
+  "ece_cruda": 0.47328559769464484,
+  "ece_calibrada": 0.0002056941352624645,
+  "cobertura": 0.45222222222222225,
+  "acc_clase_aceptados": 100.0,
+  "pct_10_aceptados": 98.09582309582309,
+  "agarre_seguro_aceptados": 98.09582309582309,
+  "agarre_seguro_sin_rechazo": 96.86111111111111,
+  "precision_at5": 0.8435555555555555,
+  "spearman_incert_error": -0.57971006698238,
+  "auroc_deteccion_fallo": 0.9382231347279782
+ },
+ "features": "hogcolor"
+}
