@@ -1,0 +1,12 @@
+# NO PROBADO en esta sesion (no habia demonio Docker). Imagen independiente y minima del servicio de vision (build desde la raiz: docker compose build vision).
+FROM python:3.13-slim
+WORKDIR /app
+COPY requirements-vision.txt .
+RUN pip install --no-cache-dir -r requirements-vision.txt
+COPY src/ src/
+COPY services/ services/
+COPY models/protocolo_A/ models/protocolo_A/
+ENV VISION_MODEL_DIR=/app/models/protocolo_A VISION_SRC_DIR=/app/src
+EXPOSE 8001
+HEALTHCHECK --interval=15s --timeout=3s --retries=5 CMD python -c "import urllib.request as u; u.urlopen('http://localhost:8001/health')"
+CMD ["uvicorn", "services.vision_api.app:app", "--host", "0.0.0.0", "--port", "8001"]

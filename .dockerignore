@@ -1,0 +1,15 @@
+.env
+.git
+.venv
+__pycache__
+*.pyc
+data/
+logs/
+mlruns/
+mlflow.db
+notebooks/
+reports/
+eval/
+tests/
+results/fig/
+*.zip

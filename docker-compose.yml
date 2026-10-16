@@ -1,0 +1,73 @@
+# Un solo comando desde la raiz del repo:   docker compose up --build      (pantalla: http://localhost:8000)
+# NO PROBADO en esta sesion (no habia demonio Docker): validar con `docker compose config` y `docker compose up --build`.
+# Requisitos: archivo .env (python scripts/init_env.py + completar AZURE_OPENAI_*). La configuracion NO esta en el codigo ni en las imagenes.
+# Para que la demo tenga imagenes de ejemplo, ./data/cache/coil100.npz debe existir (python src/prepare_data.py); si no, se siembra solo la base.
+x-agent: &agent
+  build: {context: ., dockerfile: deploy/Dockerfile.agent}
+  env_file: [.env]
+  volumes: ["appdata:/app/data"]          # volumen nombrado (no carpeta de Windows): SQLite en modo WAL necesita memoria compartida real
+  restart: unless-stopped
+
+x-mcp-env: &mcp-env
+  MCP_TRANSPORT: streamable-http
+  MCP_HOST: 0.0.0.0
+  VISION_SERVICE_URL: http://vision:8001
+
+services:
+  vision:
+    build: {context: ., dockerfile: deploy/Dockerfile.vision}
+    env_file: [.env]
+    environment: {VISION_FAULT_INJECTION: "${VISION_FAULT_INJECTION:-0}"}
+    ports: ["8001:8001"]
+    restart: unless-stopped
+
+  bootstrap:                                  # una vez: siembra la base y las imagenes de demostracion si faltan
+    <<: *agent
+    command: ["python", "scripts/bootstrap.py"]
+    restart: "no"
+    volumes: ["appdata:/app/data", "./data/cache:/app/data/cache:ro"]
+
+  mcp-vision:
+    <<: *agent
+    command: ["python", "-m", "services.mcp_servers.vision_server"]
+    environment: {<<: *mcp-env, MCP_PORT: "8101"}
+    depends_on: {vision: {condition: service_started}, bootstrap: {condition: service_completed_successfully}}
+    healthcheck: &hc {test: ["CMD", "python", "-c", "import os,urllib.request as u; u.urlopen('http://localhost:'+os.environ['MCP_PORT']+'/health')"], interval: 10s, timeout: 3s, retries: 6}
+  mcp-ops:
+    <<: *agent
+    command: ["python", "-m", "services.mcp_servers.ops_server"]
+    environment: {<<: *mcp-env, MCP_PORT: "8102"}
+    depends_on: {bootstrap: {condition: service_completed_successfully}}
+    healthcheck: *hc
+  mcp-maintenance:
+    <<: *agent
+    command: ["python", "-m", "services.mcp_servers.maintenance_server"]
+    environment: {<<: *mcp-env, MCP_PORT: "8103"}
+    depends_on: {bootstrap: {condition: service_completed_successfully}}
+    healthcheck: *hc
+  mcp-ml:
+    <<: *agent
+    command: ["python", "-m", "services.mcp_servers.ml_eng_server"]
+    environment: {<<: *mcp-env, MCP_PORT: "8104"}
+    depends_on: {bootstrap: {condition: service_completed_successfully}}
+    healthcheck: *hc
+
+  agent-api:
+    <<: *agent
+    ports: ["8000:8000"]
+    environment:
+      AGENT_HUB: http
+      VISION_SERVICE_URL: http://vision:8001
+      MCP_URL_VISION: http://mcp-vision:8101/mcp/
+      MCP_URL_OPS: http://mcp-ops:8102/mcp/
+      MCP_URL_MAINTENANCE: http://mcp-maintenance:8103/mcp/
+      MCP_URL_ML_ENG: http://mcp-ml:8104/mcp/
+    depends_on:
+      mcp-vision: {condition: service_healthy}
+      mcp-ops: {condition: service_healthy}
+      mcp-maintenance: {condition: service_healthy}
+      mcp-ml: {condition: service_healthy}
+    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8000/health')"], interval: 10s, timeout: 5s, retries: 6}
+
+volumes:
+  appdata:
