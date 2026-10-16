@@ -1,0 +1,30 @@
+sequenceDiagram
+  autonumber
+  participant C as Celda / camara
+  participant V as Servicio de vision (:8001)
+  participant R as Robot (simulado)
+  participant Q as Cola de revision (ops.db)
+  participant H as Persona (calidad / supervisor)
+  participant A as Agente + tools
+  C->>V: POST /v1/predict (imagen)
+  V->>V: calidad de imagen (nitidez, exposicion, contraste, tamano)
+  alt calidad insuficiente
+    V-->>C: RECAPTURE (no llama al modelo)
+  else calidad suficiente
+    V->>V: clasificar (clase conocida o fuera de dominio) + estimar angulo
+    V-->>C: decision GRASP / RETRY_VIEW / REJECT + angulo, class_score, distancia a vistas conocidas, evidencia
+  end
+  alt GRASP
+    C->>R: angulo (lo ejecuta el controlador de la celda, fuera del alcance del MVP)
+  else RETRY_VIEW
+    C->>C: capturar otra vista y repetir
+  else REJECT o fuera de dominio
+    Note over C,Q: el robot no se mueve
+    H->>A: "inspecciona img_x" (por la pantalla)
+    A->>V: inspect_image (por MCP)
+    A->>Q: queue_reject (solo imagenes ya inspeccionadas)
+    H->>A: confirmar etiqueta o proponer angulo manual
+    A->>Q: send_manual_angle -> solicitud pendiente_de_aprobacion
+    H->>R: aprobar en la pantalla -> el efecto se aplica con token HMAC
+    Note over R: en el MVP "enviar al robot" = fila en robot_outbox
+  end

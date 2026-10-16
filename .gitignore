@@ -1,5 +1,23 @@
+# entorno y cache
 venv/
+.venv/
 __pycache__/
-.ipynb_checkpoints/
-data/
 *.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+# secretos
+.env
+# datos (no se versionan: COIL-100, cache, base operativa, cargas)
+data/
+# generados por el asistente / evaluacion
+eval/.template/
+eval/selftest_results.*
+demo/selftest.*
+logs/
+mlruns/
+mlflow.db
+# paquetes y carpetas de envio
+*.zip
+*.rar
+Entregables/
+_to_delete/

@@ -1,0 +1,37 @@
+sequenceDiagram
+  autonumber
+  actor Ana as Ana (supervisora L1)
+  participant UI as Pantalla
+  participant API as agent-api
+  participant ORQ as Orquestador
+  participant LLM as LLM (Azure)
+  participant MCP as ops_server (MCP)
+  participant APR as ApprovalService
+  actor Luis as Luis (supervisor L1)
+  Ana->>UI: "Los rechazos subieron en T3. Que cambio? Sube el umbral a 0.85"
+  UI->>API: POST /v1/chat (JWT: usuario, rol, linea)
+  API->>ORQ: handle(sesion, mensaje)
+  ORQ->>LLM: enrutador (sin tools) -> "operaciones"
+  loop maximo 4 rondas de tools
+    ORQ->>LLM: mensajes + SOLO las tools del agente de operaciones
+    LLM-->>ORQ: tool_call query_metrics_turn / get_line_context
+    ORQ->>MCP: tools/call con el JWT de la sesion (el LLM no lo ve)
+    MCP->>MCP: JWT, rol, linea, esquema, auditoria
+    MCP-->>ORQ: datos (rechazos T3 +72.7 %, umbral 0.7->0.8 a las 02:55, deriva de camara)
+  end
+  LLM-->>ORQ: tool_call change_confidence_threshold(0.85)
+  ORQ->>MCP: tools/call
+  MCP->>APR: crear solicitud (hash del payload + contexto)
+  MCP-->>ORQ: status = pending_human_approval, request_id
+  Note over MCP,APR: la tool NO cambia el umbral
+  ORQ->>LLM: resultado de la tool
+  LLM-->>ORQ: respuesta final (explicacion + "queda pendiente de aprobacion")
+  ORQ-->>API: respuesta, traza de tools, tokens y costo
+  API-->>UI: respuesta + request_id pendiente
+  Luis->>UI: abre "Aprobaciones pendientes"
+  UI->>API: POST /v1/approvals/{id}/approve (JWT de Luis)
+  API->>APR: verifica rol, linea, TTL y que el contexto no cambio
+  APR->>APR: emite token HMAC (solicitud, hash, aprobador, hora)
+  APR->>APR: el ejecutor verifica el token y aplica el cambio
+  APR-->>API: applied (0.8 -> 0.85) + auditoria encadenada
+  API-->>UI: umbral actualizado

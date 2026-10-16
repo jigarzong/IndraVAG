@@ -1,0 +1,715 @@
+{
+ "errors": [
+  {
+   "code": "UNAUTHENTICATED",
+   "http": 401,
+   "meaning": "JWT ausente, invalido o vencido",
+   "retryable": false
+  },
+  {
+   "code": "FORBIDDEN",
+   "http": 403,
+   "meaning": "el rol del JWT no puede usar la tool",
+   "retryable": false
+  },
+  {
+   "code": "FORBIDDEN_LINE",
+   "http": 403,
+   "meaning": "el argumento line_id no coincide con la linea del JWT",
+   "retryable": false
+  },
+  {
+   "code": "UNKNOWN_TOOL",
+   "http": 404,
+   "meaning": "la tool no existe en ese servidor (o no esta en el conjunto del agente)",
+   "retryable": false
+  },
+  {
+   "code": "VALIDATION_ERROR",
+   "http": 422,
+   "meaning": "los argumentos no cumplen el esquema JSON o una regla de negocio; incluye el campo",
+   "retryable": false
+  },
+  {
+   "code": "IMAGE_NOT_FOUND",
+   "http": 404,
+   "meaning": "alguna imagen no existe en la linea del usuario (incluye missing_ids)",
+   "retryable": false
+  },
+  {
+   "code": "VISION_TIMEOUT",
+   "http": 504,
+   "meaning": "el servicio de vision no respondio dentro del limite (no se reintenta automaticamente)",
+   "retryable": false
+  },
+  {
+   "code": "VISION_UNREACHABLE",
+   "http": 502,
+   "meaning": "no se pudo conectar con el servicio de vision",
+   "retryable": true
+  },
+  {
+   "code": "VISION_5XX",
+   "http": 502,
+   "meaning": "el servicio de vision respondio 5xx (la tool ya hizo su reintento controlado)",
+   "retryable": true
+  },
+  {
+   "code": "VISION_REJECTED_REQUEST",
+   "http": 422,
+   "meaning": "el servicio de vision rechazo la solicitud (4xx)",
+   "retryable": false
+  },
+  {
+   "code": "NOT_INSPECTED",
+   "http": 409,
+   "meaning": "queue_reject solo acepta imagenes ya inspeccionadas",
+   "retryable": false
+  },
+  {
+   "code": "NOT_FOUND",
+   "http": 404,
+   "meaning": "caso inexistente en la linea",
+   "retryable": false
+  },
+  {
+   "code": "UNKNOWN_CLASS",
+   "http": 422,
+   "meaning": "la clase no esta en el catalogo de SKU",
+   "retryable": false
+  },
+  {
+   "code": "CONFLICT",
+   "http": 409,
+   "meaning": "el caso ya tiene otra etiqueta confirmada; no se sobrescribe",
+   "retryable": false
+  },
+  {
+   "code": "CASE_NOT_OPEN",
+   "http": 409,
+   "meaning": "el caso no esta abierto",
+   "retryable": false
+  },
+  {
+   "code": "TURN_NOT_FOUND",
+   "http": 404,
+   "meaning": "el turno no existe para la linea",
+   "retryable": false
+  },
+  {
+   "code": "TURN_NOT_CLOSED",
+   "http": 409,
+   "meaning": "el reporte solo se genera con el turno cerrado",
+   "retryable": false
+  },
+  {
+   "code": "NOT_IN_REVIEW_QUEUE",
+   "http": 409,
+   "meaning": "el caso debe estar en la cola de revision de la linea",
+   "retryable": false
+  },
+  {
+   "code": "CASE_NOT_ACTIONABLE",
+   "http": 409,
+   "meaning": "el caso no esta en un estado que permita la accion",
+   "retryable": false
+  },
+  {
+   "code": "SKU_EXISTS",
+   "http": 409,
+   "meaning": "ya existe un SKU con ese nombre",
+   "retryable": false
+  },
+  {
+   "code": "NOT_VALIDATED",
+   "http": 409,
+   "meaning": "el SKU no tiene un lote validado en staging",
+   "retryable": false
+  },
+  {
+   "code": "NO_EVIDENCE_AVAILABLE",
+   "http": 501,
+   "meaning": "el MVP solo evalua SKU de demostracion (simulado)",
+   "retryable": false
+  },
+  {
+   "code": "EVIDENCE_NOT_FOUND",
+   "http": 404,
+   "meaning": "la evidencia no existe o no corresponde a la version candidata",
+   "retryable": false
+  },
+  {
+   "code": "NOT_A_CANDIDATE",
+   "http": 409,
+   "meaning": "la version no esta como candidata",
+   "retryable": false
+  },
+  {
+   "code": "EVIDENCE_BELOW_MINIMUMS",
+   "http": 422,
+   "meaning": "la evidencia no alcanza los minimos de promocion; no se crea la solicitud",
+   "retryable": false
+  },
+  {
+   "code": "INTERNAL_ERROR",
+   "http": 500,
+   "meaning": "fallo inesperado; el detalle queda solo en la auditoria, no se devuelve al LLM",
+   "retryable": false
+  }
+ ],
+ "tool_contract_version": "1.0",
+ "tools": [
+  {
+   "description": "Valida la calidad de 1 a 5 imagenes ya cargadas, identifica el objeto, estima el angulo y devuelve la decision GRASP / RETRY_VIEW / REJECT con confianza calibrada, incertidumbre y vistas similares como evidencia. Si la calidad no alcanza, no se llama al modelo y se pide volver a capturar. Solo lectura.",
+   "effect": "solo lectura",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "image_ids": {
+      "items": {
+       "pattern": "^[A-Za-z0-9_-]{1,64}$",
+       "type": "string"
+      },
+      "maxItems": 5,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+     },
+     "line_id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "image_ids"
+    ],
+    "type": "object"
+   },
+   "name": "inspect_image",
+   "roles": "todos",
+   "server": "vision_server"
+  },
+  {
+   "description": "Deriva a la cola de revision humana una imagen ya inspeccionada (normalmente con decision REJECT) y devuelve su queue_id.",
+   "effect": "escritura (idempotente por sesion)",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "image_id": {
+      "pattern": "^[A-Za-z0-9_-]{1,64}$",
+      "type": "string"
+     },
+     "line_id": {
+      "type": "string"
+     },
+     "reason": {
+      "maxLength": 200,
+      "minLength": 3,
+      "type": "string"
+     }
+    },
+    "required": [
+     "image_id",
+     "reason"
+    ],
+    "type": "object"
+   },
+   "name": "queue_reject",
+   "roles": [
+    "supervisor",
+    "calidad"
+   ],
+   "server": "vision_server"
+  },
+  {
+   "description": "Lista hasta 20 casos de la cola de revision humana de su linea.",
+   "effect": "solo lectura",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "limit": {
+      "maximum": 20,
+      "minimum": 1,
+      "type": "integer"
+     },
+     "line_id": {
+      "type": "string"
+     },
+     "status": {
+      "enum": [
+       "open",
+       "labeled",
+       "manual_angle_sent"
+      ],
+      "type": "string"
+     }
+    },
+    "type": "object"
+   },
+   "name": "list_review_queue",
+   "roles": [
+    "supervisor",
+    "calidad"
+   ],
+   "server": "vision_server"
+  },
+  {
+   "description": "Registra la etiqueta (clase y angulo opcional) que confirmo una persona para un caso de la cola y la deja en staging de reentrenamiento.",
+   "effect": "escritura (idempotente por sesion)",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "confirmed_angle": {
+      "exclusiveMaximum": 360,
+      "minimum": 0,
+      "type": "number"
+     },
+     "confirmed_class": {
+      "maximum": 100000,
+      "minimum": 1,
+      "type": "integer"
+     },
+     "line_id": {
+      "type": "string"
+     },
+     "queue_id": {
+      "pattern": "^Q-[a-z0-9]{1,16}$",
+      "type": "string"
+     }
+    },
+    "required": [
+     "queue_id",
+     "confirmed_class"
+    ],
+    "type": "object"
+   },
+   "name": "confirm_review_label",
+   "roles": [
+    "supervisor",
+    "calidad"
+   ],
+   "server": "vision_server"
+  },
+  {
+   "description": "Consulta una metrica de un turno (throughput, rejects, grasp_failures, downtime), total o por hora, comparada con el turno anterior. Solo lectura.",
+   "effect": "solo lectura",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "interval": {
+      "enum": [
+       "turn",
+       "hour"
+      ],
+      "type": "string"
+     },
+     "line_id": {
+      "type": "string"
+     },
+     "metric": {
+      "enum": [
+       "throughput",
+       "rejects",
+       "grasp_failures",
+       "downtime"
+      ],
+      "type": "string"
+     },
+     "turn_id": {
+      "description": "AAAA-MM-DD-T1..T3, o T1..T3 para el dia de hoy",
+      "pattern": "^(\\d{4}-\\d{2}-\\d{2}-)?T[123]$",
+      "type": "string"
+     }
+    },
+    "required": [
+     "turn_id",
+     "metric",
+     "interval"
+    ],
+    "type": "object"
+   },
+   "name": "query_metrics_turn",
+   "roles": "todos",
+   "server": "ops_server"
+  },
+  {
+   "description": "Estado de la camara (calibracion, nitidez, exposicion, fallos), version de modelo y umbral vigentes, y cambios de version, umbral o estado dentro de una ventana de maximo 24 h. Solo lectura.",
+   "effect": "solo lectura",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "line_id": {
+      "type": "string"
+     },
+     "window": {
+      "oneOf": [
+       {
+        "additionalProperties": false,
+        "properties": {
+         "kind": {
+          "const": "turn"
+         },
+         "turn_id": {
+          "pattern": "^(\\d{4}-\\d{2}-\\d{2}-)?T[123]$",
+          "type": "string"
+         }
+        },
+        "required": [
+         "kind",
+         "turn_id"
+        ],
+        "type": "object"
+       },
+       {
+        "additionalProperties": false,
+        "properties": {
+         "end": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}(:\\d{2})?$",
+          "type": "string"
+         },
+         "kind": {
+          "const": "range"
+         },
+         "start": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}(:\\d{2})?$",
+          "type": "string"
+         }
+        },
+        "required": [
+         "kind",
+         "start",
+         "end"
+        ],
+        "type": "object"
+       }
+      ]
+     }
+    },
+    "required": [
+     "window"
+    ],
+    "type": "object"
+   },
+   "name": "get_line_context",
+   "roles": "todos",
+   "server": "ops_server"
+  },
+  {
+   "description": "Genera (o reemplaza) el reporte de entrega de un turno ya cerrado: metricas, incidentes, tickets abiertos y casos pendientes.",
+   "effect": "escritura (idempotente por sesion)",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "line_id": {
+      "type": "string"
+     },
+     "turn_id": {
+      "pattern": "^(\\d{4}-\\d{2}-\\d{2}-)?T[123]$",
+      "type": "string"
+     }
+    },
+    "required": [
+     "turn_id"
+    ],
+    "type": "object"
+   },
+   "name": "generate_shift_report",
+   "roles": [
+    "supervisor"
+   ],
+   "server": "ops_server"
+  },
+  {
+   "description": "Prepara el cambio del umbral de confianza de la linea. NO lo aplica: queda pendiente de aprobacion humana (devuelve request_id).",
+   "effect": "riesgo: solo prepara una solicitud; la decide una persona",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "line_id": {
+      "type": "string"
+     },
+     "new_threshold": {
+      "exclusiveMaximum": 1,
+      "exclusiveMinimum": 0,
+      "type": "number"
+     },
+     "reason": {
+      "maxLength": 300,
+      "minLength": 5,
+      "type": "string"
+     }
+    },
+    "required": [
+     "new_threshold",
+     "reason"
+    ],
+    "type": "object"
+   },
+   "name": "change_confidence_threshold",
+   "roles": [
+    "supervisor"
+   ],
+   "server": "ops_server"
+  },
+  {
+   "description": "Prepara pausar o reanudar la linea. NO lo aplica: queda pendiente de aprobacion humana (devuelve request_id).",
+   "effect": "riesgo: solo prepara una solicitud; la decide una persona",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "action": {
+      "enum": [
+       "pause",
+       "resume"
+      ],
+      "type": "string"
+     },
+     "line_id": {
+      "type": "string"
+     },
+     "reason": {
+      "maxLength": 300,
+      "minLength": 5,
+      "type": "string"
+     }
+    },
+    "required": [
+     "action",
+     "reason"
+    ],
+    "type": "object"
+   },
+   "name": "control_line_state",
+   "roles": [
+    "supervisor"
+   ],
+   "server": "ops_server"
+  },
+  {
+   "description": "Prepara el envio de un angulo manual al robot para un caso de la cola de revision. NO lo envia: requiere aprobacion humana (devuelve request_id).",
+   "effect": "riesgo: solo prepara una solicitud; la decide una persona",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "image_id": {
+      "pattern": "^[A-Za-z0-9_-]{1,64}$",
+      "type": "string"
+     },
+     "line_id": {
+      "type": "string"
+     },
+     "manual_angle": {
+      "exclusiveMaximum": 360,
+      "minimum": 0,
+      "type": "number"
+     },
+     "reason": {
+      "maxLength": 300,
+      "minLength": 5,
+      "type": "string"
+     }
+    },
+    "required": [
+     "image_id",
+     "manual_angle",
+     "reason"
+    ],
+    "type": "object"
+   },
+   "name": "send_manual_angle",
+   "roles": [
+    "supervisor"
+   ],
+   "server": "ops_server"
+  },
+  {
+   "description": "Busca en los SOP y manuales y devuelve hasta 3 fragmentos truncados con sus document_ids para citarlos. Si no hay resultados, no hay SOP aplicable. Solo lectura.",
+   "effect": "solo lectura",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "equipment": {
+      "enum": [
+       "gripper",
+       "camera",
+       "robot_arm",
+       "conveyor",
+       "lighting"
+      ],
+      "type": "string"
+     },
+     "query": {
+      "maxLength": 300,
+      "minLength": 3,
+      "type": "string"
+     }
+    },
+    "required": [
+     "query"
+    ],
+    "type": "object"
+   },
+   "name": "search_sop",
+   "roles": [
+    "mantenimiento",
+    "supervisor",
+    "ingeniero_ml"
+   ],
+   "server": "maintenance_server"
+  },
+  {
+   "description": "Crea un ticket de mantenimiento (baja, media o alta). Si ya hay uno abierto igual para la linea y el equipo dentro de la ventana, devuelve el existente.",
+   "effect": "escritura (idempotente por sesion)",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "equipment": {
+      "enum": [
+       "gripper",
+       "camera",
+       "robot_arm",
+       "conveyor",
+       "lighting"
+      ],
+      "type": "string"
+     },
+     "issue_desc": {
+      "maxLength": 500,
+      "minLength": 10,
+      "type": "string"
+     },
+     "line_id": {
+      "type": "string"
+     },
+     "priority": {
+      "enum": [
+       "baja",
+       "media",
+       "alta"
+      ],
+      "type": "string"
+     }
+    },
+    "required": [
+     "issue_desc",
+     "priority",
+     "equipment"
+    ],
+    "type": "object"
+   },
+   "name": "create_ticket",
+   "roles": [
+    "supervisor",
+    "mantenimiento"
+   ],
+   "server": "maintenance_server"
+  },
+  {
+   "description": "Valida un lote de vistas de un SKU nuevo (cantidad minima, calidad de cada imagen y cobertura de angulos) y lo deja en staging. Nunca toca el modelo productivo.",
+   "effect": "escritura (idempotente por sesion)",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "image_ids": {
+      "items": {
+       "pattern": "^[A-Za-z0-9_-]{1,64}$",
+       "type": "string"
+      },
+      "maxItems": 200,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+     },
+     "line_id": {
+      "type": "string"
+     },
+     "sku_name": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{1,39}$",
+      "type": "string"
+     }
+    },
+    "required": [
+     "sku_name",
+     "image_ids"
+    ],
+    "type": "object"
+   },
+   "name": "upload_new_sku_views",
+   "roles": [
+    "ingeniero_ml"
+   ],
+   "server": "ml_eng_server"
+  },
+  {
+   "description": "Evalua en staging el modelo candidato con el SKU nuevo segun el protocolo A, B, C o D y devuelve exactitud, error angular circular medio, % dentro de 10 grados y un evidence_report_id.",
+   "effect": "solo lectura",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "line_id": {
+      "type": "string"
+     },
+     "protocol": {
+      "enum": [
+       "A",
+       "B",
+       "C",
+       "D"
+      ],
+      "type": "string"
+     },
+     "sku_name": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{1,39}$",
+      "type": "string"
+     }
+    },
+    "required": [
+     "sku_name",
+     "protocol"
+    ],
+    "type": "object"
+   },
+   "name": "test_sku_model",
+   "roles": [
+    "ingeniero_ml"
+   ],
+   "server": "ml_eng_server"
+  },
+  {
+   "description": "Prepara la promocion de una version candidata a produccion. NO la aplica: el middleware valida la evidencia contra los minimos y la solicitud queda pendiente de aprobacion de otro usuario.",
+   "effect": "riesgo: solo prepara una solicitud; la decide una persona",
+   "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+     "candidate_version": {
+      "maxLength": 80,
+      "minLength": 3,
+      "type": "string"
+     },
+     "evidence_report_id": {
+      "pattern": "^ER-[a-f0-9]{8}$",
+      "type": "string"
+     },
+     "line_id": {
+      "type": "string"
+     },
+     "reason": {
+      "maxLength": 300,
+      "minLength": 5,
+      "type": "string"
+     }
+    },
+    "required": [
+     "candidate_version",
+     "evidence_report_id",
+     "reason"
+    ],
+    "type": "object"
+   },
+   "name": "promote_model_version",
+   "roles": [
+    "ingeniero_ml"
+   ],
+   "server": "ml_eng_server"
+  }
+ ]
+}

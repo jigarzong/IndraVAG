@@ -1,0 +1,35 @@
+flowchart LR
+  subgraph Cliente
+    UI["Pantalla web del operador<br/>(chat, carga de imagen, aprobaciones)"]
+    CELL["Celda robotica / camara<br/>(llama directo al servicio de vision)"]
+  end
+  subgraph AGENTE["Servicio del agente (agent-api :8000)"]
+    API["FastAPI: JWT, sesiones, /v1/chat,<br/>/v1/images, /v1/approvals, auditoria"]
+    ORQ["Orquestador (Semantic Kernel)<br/>enrutador + agente especialista<br/>limites: 4 rondas, anti-loop, timeout 180 s"]
+    APR["ApprovalService<br/>token HMAC (no es una tool)"]
+  end
+  LLM[("Azure AI Foundry<br/>despliegue gpt-5.4-mini")]
+  subgraph MCP["Servidores MCP (streamable-HTTP)"]
+    V["vision_server :8101"]
+    O["ops_server :8102"]
+    M["maintenance_server :8103"]
+    E["ml_eng_server :8104"]
+  end
+  MW["Pipeline comun por llamada:<br/>JWT, RBAC, linea, esquema JSON,<br/>idempotencia, auditoria encadenada"]
+  VIS["Servicio de vision (vision :8001)<br/>HOG+HSV, SVM calibrado<br/>bundle.joblib + thresholds.json"]
+  DB[("SQLite ops.db<br/>(MVP; PostgreSQL en produccion)")]
+  IMG[("Almacen de imagenes")]
+  ROB["Robot (SIMULADO:<br/>tabla robot_outbox)"]
+  UI -->|HTTPS + JWT| API
+  API --> ORQ
+  ORQ -->|"mensajes + esquemas de tools"| LLM
+  ORQ -->|"tools/call + JWT"| MCP
+  MCP --- MW
+  V -->|"POST /v1/predict"| VIS
+  CELL -->|"POST /v1/predict"| VIS
+  MW --> DB
+  MW --> IMG
+  UI -->|"aprobar / rechazar"| API
+  API --> APR
+  APR -->|"aplica el efecto solo con token valido"| DB
+  APR --> ROB
