@@ -1,0 +1,74 @@
+{
+  "_comment": "Tarifas del LLM para estimar costo por ejecucion. Capturadas por el usuario de la pagina Azure OpenAI Service - Pricing (region East US, USD, por 1M de tokens, despliegue Global). Verificar contra la ficha del modelo desplegado antes de reportar costos.",
+  "captured_on": "2026-10-15",
+  "region": "East US",
+  "currency": "USD",
+  "unit": "per_1M_tokens",
+  "notice": "La propia pagina indicaba que los precios de GPT-6 Sol y Luna estaban 'en proceso de publicacion': tratar como provisionales.",
+  "models": {
+    "gpt-4.1-mini-global": {
+      "input": 0.4,
+      "cached_input": 0.1,
+      "output": 1.6
+    },
+    "gpt-4.1-nano-global": {
+      "input": 0.1,
+      "cached_input": 0.03,
+      "output": 0.4
+    },
+    "gpt-4.1-global": {
+      "input": 2.0,
+      "cached_input": 0.5,
+      "output": 8.0
+    },
+    "gpt-5-mini-global": {
+      "input": 0.25,
+      "cached_input": 0.03,
+      "output": 2.0
+    },
+    "gpt-5-nano-global": {
+      "input": 0.05,
+      "cached_input": 0.01,
+      "output": 0.4
+    },
+    "gpt-5.4-global": {
+      "input": 2.5,
+      "cached_input": 0.25,
+      "output": 15.0
+    },
+    "gpt-5.5-global": {
+      "input": 5.0,
+      "cached_input": 0.5,
+      "output": 30.0
+    },
+    "gpt-5.6-luna-global": {
+      "input": 0.2,
+      "cached_input": 0.02,
+      "output": 1.2
+    },
+    "gpt-6-luna-global": {
+      "input": 0.1,
+      "cached_input": 0.01,
+      "output": 0.5,
+      "provisional": true
+    },
+    "gpt-6-sol-global": {
+      "input": 2.0,
+      "cached_input": 0.2,
+      "output": 10.0,
+      "provisional": true
+    },
+    "o4-mini-global": {
+      "input": 1.1,
+      "cached_input": 0.28,
+      "output": 4.4
+    },
+    "gpt-5.4-mini-global": {
+      "input": 0.75,
+      "cached_input": 0.075,
+      "output": 4.5,
+      "provisional": true,
+      "source": "azurespeed.com (agregador de terceros), Global Standard; NO proviene de la pagina oficial. Verificar en Azure Pricing Calculator antes de reportar costos."
+    }
+  }
+}

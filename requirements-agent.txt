@@ -1,0 +1,5 @@
+# Servidores MCP de tools + API de aprobaciones (se suma al servicio de vision). Incluye el orquestador (Semantic Kernel).
+-r requirements-vision.txt
+PyJWT==2.14.0
+jsonschema==4.26.0
+semantic-kernel==1.45.0

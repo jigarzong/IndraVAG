@@ -17,6 +17,8 @@ for f in files:
 imgs, obj, ang = np.stack(imgs), np.array(obj), np.array(ang)
 os.makedirs("data/cache", exist_ok=True)
 np.savez_compressed("data/cache/coil100.npz", imgs=imgs, obj=obj, ang=ang, names=np.array(files), sha=h.hexdigest())
+if os.environ.get("CACHE_ONLY") == "1":          # solo el cache de imagenes (lo necesita la demo del asistente); omite los descriptores del Reto 2
+    print("SHA-256 del dataset:", h.hexdigest()); raise SystemExit(0)
 np.savez_compressed("data/cache/features.npz", hog=hog_features(imgs), color=color_features(imgs))
 pix = np.stack([cv2.resize(i, (32, 32), interpolation=cv2.INTER_AREA).astype(np.float32).ravel() / 255 for i in imgs])
 np.savez_compressed("data/cache/features_pix.npz", pix=pix)
