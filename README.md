@@ -6,12 +6,12 @@ Solución técnica de extremo a extremo para reemplazar tareas manuales en una l
 
 | Reto | Entregable | Ubicación |
 | :--- | :--- | :--- |
-| Reto 1 | Diagramas AS-IS y TO-BE (BPMN) | `reports/` (PDF del Reto 1) |
+| Reto 1 | Diagramas AS-IS y TO-BE (BPMN) | [`Reto 1 - Modelado AS-IS y TO-BE.pdf`](<./Reto 1 - Modelado AS-IS y TO-BE.pdf>) (raíz del repositorio) |
 | Reto 2 | Notebook reproducible (CRISP-DM, secciones 9 en adelante vigentes) | [`notebooks/Indra_MLModel_Vision.ipynb`](./notebooks/Indra_MLModel_Vision.ipynb) |
 | Reto 2 | Reporte de resultados por protocolo, análisis de errores y model card (PDF) | [`reports/Reto 2 - Resultados, analisis de errores y model card.pdf`](./reports) |
 | Reto 2 | Model Card | [`model_card.md`](./model_card.md) |
 | Reto 2 | Modelo exportado y función de inferencia | [`models/protocolo_A/`](./models/protocolo_A), [`src/inference.py`](./src/inference.py) |
-| Reto 3 | Arquitectura agéntica, herramientas y diagramas | Documento del Reto 3 |
+| Reto 3 | Arquitectura agéntica, herramientas y diagramas | [`Reto 3 - Asistente Agentico de Operacion de Vision.pdf`](<./Reto 3 - Asistente Agentico de Operacion de Vision.pdf>) y [`.docx`](<./Reto 3 - Asistente Agentico de Operacion de Vision.docx>) (raíz); la implementación está en [`docs/`](./docs) y [`services/`](./services). Las secciones 7.6 (resultados medidos) y 7.7 del documento están pendientes de actualizar con la evaluación completa |
 | Reto 4 | MVP ejecutable: servicio de visión (API propia), 4 servidores MCP, API del agente con pantalla y aprobaciones | [`services/`](./services), [`docker-compose.yml`](./docker-compose.yml), [`scripts/run_stack.py`](./scripts/run_stack.py) |
 | Reto 4 | Arquitectura, diagramas de componentes y de secuencia (imagen→robot; flujo agéntico con aprobación humana) | [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md), [`docs/diagrams/`](./docs/diagrams) |
 | Reto 4 | Catálogo de tools y contratos (Markdown, JSON Schema, OpenAPI) | [`docs/TOOLS_CATALOG.md`](./docs/TOOLS_CATALOG.md), [`docs/contracts/`](./docs/contracts) |
